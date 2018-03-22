@@ -15,7 +15,7 @@ var request = require('request');
 // spotify-this-song
 // movie-this
 // do-what-it-says
-
+// =======================================================
 // Show my tweets
 if (process.argv[2] === "my-tweets") {
     client.get('search/tweets', {q: 'MelMel_1994'}, function(error, tweets, response) {
@@ -30,10 +30,10 @@ if (process.argv[2] === "my-tweets") {
     });
 }
 
+// =======================================================
 // Show song info - Spotify
 var song = process.argv[3];
-
-if (process.argv[2] === "spotify-this-song") {
+function spotSong() {
     spotify.search({type: "track", query: song}, function(error, data) {
         if (error) {
             return console.log("error");
@@ -59,15 +59,64 @@ if (process.argv[2] === "spotify-this-song") {
         var preview = data.tracks.items[0].external_urls.spotify;
         console.log("SPOTIFY PREVIEW: \n" + preview + "\n-----------------");
     });
+};
+
+if (process.argv[2] === "spotify-this-song") {
+    if (process.argv[3]) {
+        spotSong();
+    }
+    else {
+        song = "The Sign";
+        spotSong();
+    }
 }
 
+// =======================================================
 // Movie info - OMDB
-if (process.argv[2] === "movie-this") {
-    request('http://www.omdbapi.com/?apikey=trilogy&t='+process.argv[3], function(error, response, body) {
-        console.log(JSON.stringify(body, null, 2));
+function movieFunc(movie) {
+    request('http://www.omdbapi.com/?apikey=trilogy&t='+ movie, function(error, response, body) {
+        if (error) {
+            return console.log('error');
+        }
+        // console.log(JSON.parse(body, null, 2));
+        
+        // title
+        console.log("TITLE: " + JSON.parse(body).Title + "\n-----------------");
+
+        // Year released
+        console.log("YEAR RELEASED: " + JSON.parse(body).Year + "\n-----------------");
+
+        // IMDB rating
+        console.log("IMDB RATING: " + JSON.parse(body).imdbRating + "\n-----------------");
+
+        //Rotten Tomatoes rating
+        console.log("ROTTEN TOMATOES RATING: " + JSON.parse(body).Ratings[1].Value + "\n-----------------");
+
+        // Country where produced
+        console.log("PRODUCTION COUNTRY: " + JSON.parse(body).Production + "\n-----------------");
+
+        // Language of movie
+        console.log("LANGUAGES: " + JSON.parse(body).Language + "\n-----------------");
+
+        // plot
+        console.log("PLOT: " + JSON.parse(body).Plot + "\n-----------------");
+
+        // actors
+        console.log("ACTORS: " + JSON.parse(body).Actors + "\n-----------------");
     });
+};
+
+if (process.argv[3]) {
+   if (process.argv[2] === "movie-this") {
+        movieFunc(process.argv[3]);
+    } 
+}
+else {
+    movieFunc("Mr.+Nobody");
 }
 
+
+// =======================================================
 // Use text in random.txt
 if (process.argv[2] === "do-what-it-says") {
 

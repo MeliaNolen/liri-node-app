@@ -31,18 +31,41 @@ if (process.argv[2] === "my-tweets") {
 }
 
 // Show song info - Spotify
+var song = process.argv[3];
+
 if (process.argv[2] === "spotify-this-song") {
-    spotify.search({type: "track", query: ""}, function(error, data) {
+    spotify.search({type: "track", query: song}, function(error, data) {
         if (error) {
             return console.log("error");
         }
-        console.log(data);
+        
+        // Song name
+        var title = data.tracks.items[0].name;
+        console.log("TRACK TITLE: \n" + title + "\n-----------------");
+        
+        // Album
+        var album = data.tracks.items[0].album.name;
+        console.log("ALBUM: \n" + album + "\n-----------------");
+       
+        // Artists names
+        var artists = data.tracks.items[0].artists;
+        var artistsArray = [];
+        for (var i = 0; i < artists.length; i++) {
+            artistsArray.push("\n" + artists[i].name);
+        }
+        console.log("ARTISTS: " + artistsArray + "\n-----------------");
+        
+        // Prewiew link to song
+        var preview = data.tracks.items[0].external_urls.spotify;
+        console.log("SPOTIFY PREVIEW: \n" + preview + "\n-----------------");
     });
 }
 
 // Movie info - OMDB
 if (process.argv[2] === "movie-this") {
-
+    request('http://www.omdbapi.com/?apikey=trilogy&t='+process.argv[3], function(error, response, body) {
+        console.log(JSON.stringify(body, null, 2));
+    });
 }
 
 // Use text in random.txt

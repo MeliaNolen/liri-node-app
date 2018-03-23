@@ -29,7 +29,6 @@ function tweetFunc() {
             return console.log("error");
         }
         // console.log(JSON.stringify(tweets, null, 2));
-
         for (var i = 0; i < tweets.statuses.length; i++) {
             console.log('"' + tweets.statuses[i].text + '"' + ' was created on ' +tweets.statuses[i].created_at);
         }
@@ -42,7 +41,6 @@ function spotSong(song) {
         if (error) {
             return console.log("error");
         }
-        
         // Song name
         var title = data.tracks.items[0].name;
         console.log("TRACK TITLE: \n" + title + "\n-----------------");
@@ -72,22 +70,13 @@ function movieFunc(movie) {
             return console.log('error');
         }
         // console.log(JSON.parse(body, null, 2));
-        
-        // title
         console.log("TITLE: " + JSON.parse(body).Title + "\n-----------------");
-        // Year released
         console.log("YEAR RELEASED: " + JSON.parse(body).Year + "\n-----------------");
-        // IMDB rating
         console.log("IMDB RATING: " + JSON.parse(body).imdbRating + "\n-----------------");
-        //Rotten Tomatoes rating
         console.log("ROTTEN TOMATOES RATING: " + JSON.parse(body).Ratings[1].Value + "\n-----------------");
-        // Country where produced
         console.log("PRODUCTION COUNTRY: " + JSON.parse(body).Production + "\n-----------------");
-        // Language of movie
         console.log("LANGUAGES: " + JSON.parse(body).Language + "\n-----------------");
-        // plot
         console.log("PLOT: " + JSON.parse(body).Plot + "\n-----------------");
-        // actors
         console.log("ACTORS: " + JSON.parse(body).Actors + "\n-----------------");
     });
 };
@@ -136,4 +125,26 @@ case 'movie-this':
 case 'do-what-it-says':
     whatItSays();
     break;
+}
+
+// =======================================================
+// Bonus
+var log = [];
+function appendFile(entry) {
+    var entry = log[0] + " " + log.slice(1).join(" ") + '\n';
+    fs.appendFile('log.txt', entry, function(err) {
+        if (err) {return console.log('error');}
+    });
+};
+
+console.log(process.argv.length);
+if (process.argv.length <= 2) {
+    fs.appendFile('log.txt', 'No action defined.\n', function(err) {
+        if (err) {return console.log('error');}
+    });
+} else {
+    for (var i = 2; i < process.argv.length; i++) {
+        log.push(process.argv[i]);
+    }
+    appendFile(log);
 }

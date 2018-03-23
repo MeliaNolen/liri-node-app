@@ -1,3 +1,11 @@
+// Packages to npm install:
+// dotenv
+// node-spotify-api
+// request
+// twitter
+// fs
+// =======================================================
+// require things and set up variables
 require("dotenv").config();
 
 var keys = require("./keys.js");
@@ -10,14 +18,12 @@ var client = new Twitter(keys.twitter);
 
 var request = require('request');
 
-// commands I need:
-// my-tweets
-// spotify-this-song
-// movie-this
-// do-what-it-says
+var fs = require('fs');
 // =======================================================
+// Set up functions:
+
 // Show my tweets
-if (process.argv[2] === "my-tweets") {
+function tweetFunc() {
     client.get('search/tweets', {q: 'MelMel_1994'}, function(error, tweets, response) {
         if (error) {
             return console.log("error");
@@ -29,11 +35,9 @@ if (process.argv[2] === "my-tweets") {
         }
     });
 }
-
 // =======================================================
 // Show song info - Spotify
-var song = process.argv[3];
-function spotSong() {
+function spotSong(song) {
     spotify.search({type: "track", query: song}, function(error, data) {
         if (error) {
             return console.log("error");
@@ -60,17 +64,6 @@ function spotSong() {
         console.log("SPOTIFY PREVIEW: \n" + preview + "\n-----------------");
     });
 };
-
-if (process.argv[2] === "spotify-this-song") {
-    if (process.argv[3]) {
-        spotSong();
-    }
-    else {
-        song = "The Sign";
-        spotSong();
-    }
-}
-
 // =======================================================
 // Movie info - OMDB
 function movieFunc(movie) {
@@ -82,42 +75,63 @@ function movieFunc(movie) {
         
         // title
         console.log("TITLE: " + JSON.parse(body).Title + "\n-----------------");
-
         // Year released
         console.log("YEAR RELEASED: " + JSON.parse(body).Year + "\n-----------------");
-
         // IMDB rating
         console.log("IMDB RATING: " + JSON.parse(body).imdbRating + "\n-----------------");
-
         //Rotten Tomatoes rating
         console.log("ROTTEN TOMATOES RATING: " + JSON.parse(body).Ratings[1].Value + "\n-----------------");
-
         // Country where produced
         console.log("PRODUCTION COUNTRY: " + JSON.parse(body).Production + "\n-----------------");
-
         // Language of movie
         console.log("LANGUAGES: " + JSON.parse(body).Language + "\n-----------------");
-
         // plot
         console.log("PLOT: " + JSON.parse(body).Plot + "\n-----------------");
-
         // actors
         console.log("ACTORS: " + JSON.parse(body).Actors + "\n-----------------");
     });
 };
-
-if (process.argv[3]) {
-   if (process.argv[2] === "movie-this") {
-        movieFunc(process.argv[3]);
-    } 
-}
-else {
-    movieFunc("Mr.+Nobody");
-}
-
-
 // =======================================================
 // Use text in random.txt
-if (process.argv[2] === "do-what-it-says") {
+function whatItSays() {
+    fs.readFile('./random.txt', 'utf8', function(err, data) {
+        if (err) {
+            return console.log(err);
+        }
+        var fsText = data.split(",");
+        console.log(fsText);
+        if (fsText[0] === 'spotify-this-song'){   
+            spotSong(fsText[1]);     
+        }
+        if (fsText[0] === 'my-tweets'){   
+            tweetFunc();     
+        }
+    });
+};
+// =======================================================
 
+// Switch case to decide what to do when
+var action = process.argv[2];
+switch(action) {
+case 'my-tweets':    // I ONLY HAVE TWO TWEETS!
+    tweetFunc();
+    break;
+case 'spotify-this-song':
+    if (process.argv[3]) {
+        spotSong(process.argv[3]);
+    }
+    else {
+        spotSong("The Sign");
+    }
+    break;
+case 'movie-this':
+    if (process.argv[3]) {
+        movieFunc(process.argv[3]);
+    } else {
+    movieFunc("Mr.+Nobody");
+    }
+    break;
+case 'do-what-it-says':
+    whatItSays();
+    break;
 }

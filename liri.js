@@ -3,7 +3,6 @@
 // node-spotify-api
 // request
 // twitter
-// fs
 
 // =======================================================
 // require things and set up variables

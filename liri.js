@@ -4,6 +4,7 @@
 // request
 // twitter
 // fs
+
 // =======================================================
 // require things and set up variables
 require("dotenv").config();
@@ -19,9 +20,9 @@ var client = new Twitter(keys.twitter);
 var request = require('request');
 
 var fs = require('fs');
+
 // =======================================================
 // Set up functions:
-
 // Show my tweets
 function tweetFunc() {
     client.get('search/tweets', {q: 'MelMel_1994'}, function(error, tweets, response) {
@@ -34,7 +35,7 @@ function tweetFunc() {
         }
     });
 }
-// =======================================================
+
 // Show song info - Spotify
 function spotSong(song) {
     spotify.search({type: "track", query: song}, function(error, data) {
@@ -62,7 +63,7 @@ function spotSong(song) {
         console.log("SPOTIFY PREVIEW: \n" + preview + "\n-----------------");
     });
 };
-// =======================================================
+
 // Movie info - OMDB
 function movieFunc(movie) {
     request('http://www.omdbapi.com/?apikey=trilogy&t='+ movie, function(error, response, body) {
@@ -80,8 +81,8 @@ function movieFunc(movie) {
         console.log("ACTORS: " + JSON.parse(body).Actors + "\n-----------------");
     });
 };
-// =======================================================
-// Use text in random.txt
+
+// Use text in random.txt file
 function whatItSays() {
     fs.readFile('./random.txt', 'utf8', function(err, data) {
         if (err) {
@@ -95,10 +96,13 @@ function whatItSays() {
         if (fsText[0] === 'my-tweets'){   
             tweetFunc();     
         }
+        if (fsText[0] === 'movie-this'){   
+            movieFunc(fsText[1]);     
+        }
     });
 };
-// =======================================================
 
+// =======================================================
 // Switch case to decide what to do when
 var action = process.argv[2];
 switch(action) {
@@ -128,7 +132,7 @@ case 'do-what-it-says':
 }
 
 // =======================================================
-// Bonus
+// Bonus: adding a log for all entries
 var log = [];
 function appendFile(entry) {
     var entry = log[0] + " " + log.slice(1).join(" ") + '\n';
@@ -137,7 +141,7 @@ function appendFile(entry) {
     });
 };
 
-console.log(process.argv.length);
+
 if (process.argv.length <= 2) {
     fs.appendFile('log.txt', 'No action defined.\n', function(err) {
         if (err) {return console.log('error');}

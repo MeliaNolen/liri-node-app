@@ -117,16 +117,18 @@ case 'my-tweets':    // I ONLY HAVE TWO TWEETS!
     tweetFunc();
     break;
 case 'spotify-this-song':
-    if (process.argv[3]) {
-        spotSong(process.argv[3]);
+    var song = process.argv.slice(3).join('+');
+    if (song) {
+        spotSong(song);
     }
     else {
         spotSong("The Sign");
     }
     break;
 case 'movie-this':
-    if (process.argv[3]) {
-        movieFunc(process.argv[3]);
+    var movie = process.argv.slice(3).join('+');
+    if (movie) {
+        movieFunc(movie);
     } else {
     movieFunc("Mr.+Nobody");
     }
